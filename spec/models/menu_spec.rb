@@ -1,15 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe Menu, type: :model do
-  it "must have a name" do
-    expect { Menu.create! }.to raise_error(ActiveRecord::RecordInvalid)
+  before(:each) do
+    @restaurant = Restaurant.create(name: "Carl's Diner", address: "123 Easy Street", phone: "1(815)867-5309")
+  end
 
-    menu = Menu.create!(name: "Appetizers")
+  it "must have a name" do
+    expect { Menu.create!(restaurant: @restaurant) }.to raise_error(ActiveRecord::RecordInvalid)
+
+    menu = Menu.create!(name: "Appetizers", restaurant: @restaurant)
     expect( menu.valid? ).to be_truthy
   end
 
   it "can have multiple menu items" do
-    menu = Menu.create!(name: "Appetizers")
+    menu = Menu.create!(name: "Appetizers",restaurant: @restaurant)
 
     menu_items = [
                     {name: "Fries", description: "French fried potatoes.", price: "3.99", menu: menu},
