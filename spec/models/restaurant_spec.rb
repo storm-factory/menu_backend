@@ -31,4 +31,16 @@ RSpec.describe Restaurant, type: :model do
     restaurant = Restaurant.create!(@valid_attributes)
     expect( restaurant.valid? ).to be_truthy
   end
+
+  it "can have multiple menus" do
+    restaurant = Restaurant.create(@valid_attributes)
+    app_menu   = Menu.create(name: "Appetizers", restaurant: restaurant)
+    lunch_menu = Menu.create(name: "Lunch", restaurant: restaurant)
+
+    restaurant.menus << app_menu
+    restaurant.menus << lunch_menu
+    restaurant.save
+
+    expect(restaurant.menus.length).to equal 2
+  end
 end

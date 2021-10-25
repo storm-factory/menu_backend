@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_25_091727) do
+ActiveRecord::Schema.define(version: 2021_10_25_094733) do
 
   create_table "menu_items", charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
@@ -19,9 +19,13 @@ ActiveRecord::Schema.define(version: 2021_10_25_091727) do
     t.boolean "vegan"
     t.boolean "vegetarian"
     t.boolean "gluten_free"
-    t.integer "menu_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "menu_items_menus", id: false, charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "menu_id", null: false
+    t.bigint "menu_item_id", null: false
   end
 
   create_table "menus", charset: "utf8mb4", force: :cascade do |t|

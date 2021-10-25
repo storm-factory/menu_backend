@@ -1,4 +1,5 @@
 class MenuItem < ApplicationRecord
-  belongs_to :menu
+  has_and_belongs_to_many :menus
   validates :name, :description, :price, presence: true
+  validates :name, uniqueness: true
 end
