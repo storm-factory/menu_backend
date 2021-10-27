@@ -63,7 +63,7 @@ RSpec.describe User, type: :model do
     order.save
 
     fridays.each do |friday|
-      order = Order.create(user: fred, restaurant: @restaurant, date: friday)
+      order = Order.create(user: fred, restaurant: @restaurant, date: Date.parse(friday))
       order.menu_items << MenuItem.find_by(name: "Fish")
       order.menu_items << MenuItem.find_by(name: "Fries")
       order.save
@@ -76,4 +76,64 @@ RSpec.describe User, type: :model do
 
   end
 
+  it "can predict the day a user will order" do
+    fred = User.create!(name: "Fred")
+    days = [
+      "2021-9-3",
+      "2021-9-5",
+      "2021-9-7",
+      "2021-9-10",
+      "2021-9-17",
+      "2021-9-20",
+      "2021-9-22",
+      "2021-9-24",
+      "2021-9-17",
+      "2021-10-8",
+      "2021-10-12",
+      "2021-10-15",
+      "2021-10-16",
+      "2021-10-20",
+      "2021-10-22"
+    ]
+
+    days.each do |day|
+      order = Order.create(user: fred, restaurant: @restaurant, date: Date.parse(day))
+      order.menu_items << MenuItem.all.shuffle.first
+    end
+    expect(fred.orders.length).to eq 15
+    expect(fred.predict_day_of_order).to eq "Friday"
+  end
+
+  it "can predict the day and menu item a user will order" do
+    fred = User.create!(name: "Fred")
+    days = [
+      "2021-9-3",
+      "2021-9-5",
+      "2021-9-7",
+      "2021-9-10",
+      "2021-9-17",
+      "2021-9-20",
+      "2021-9-22",
+      "2021-9-24",
+      "2021-9-17",
+      "2021-10-8",
+      "2021-10-12",
+      "2021-10-15",
+      "2021-10-16",
+      "2021-10-20",
+      "2021-10-22"
+    ]
+
+    days.each do |day|
+      order = Order.create(user: fred, restaurant: @restaurant, date: Date.parse(day))
+      if(order.date.friday?)
+        order.menu_items << MenuItem.find_by(name: "Fish")
+      else
+        order.menu_items << MenuItem.all.shuffle.first
+      end
+    end
+
+    expect(fred.orders.length).to eq 15
+    expect(fred.predict_day_and_order).to eq ["Friday","Fish"]
+  end
 end
