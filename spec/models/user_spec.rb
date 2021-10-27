@@ -4,10 +4,12 @@ RSpec.describe User, type: :model do
   before(:each) do
     @restaurant = Restaurant.create(name: "Carl's Diner", address: "123 Easy Street", phone: "1(815)867-5309")
     menu_items = [
-                    {name: "Fries", description: "French fried potatoes.", price: 3.99},
-                    {name: "Nachos", description: "Chips with melted cheese and salsa.", price: 7.99},
-                    {name: "Mozzarella Sticks", description: "I think they are just fried cheese? Comes with dipping sauce.", price: 5.99},
-                    {name: "Fish", description: "swimming sea creatures.", price: 9.99}
+                    {name: "Fries", description: "French fried potatoes.", options: :side_dish, price: 3.99},
+                    {name: "Nachos", description: "Chips with melted cheese and salsa.", options: :side_dish, price: 7.99},
+                    {name: "Mozzarella Sticks", description: "I think they are just fried cheese? Comes with dipping sauce.", options: :side_dish, price: 5.99},
+                    {name: "Fish", description: "swimming sea creatures.", options: :main_dish, price: 9.99},
+                    {name: "Hamburger", description: "Chunk of ground meat in bread.", options: "main_dish", price: 15.99},
+                    {name: "Grilled Cheese", description: "Cheese melted between two slices of carbohydrates.", options: "main_dish", price: 10.99}
                   ]
     menu_items.each do |menu_item|
       MenuItem.create!(menu_item)
@@ -38,14 +40,40 @@ RSpec.describe User, type: :model do
   end
 
   it "can predict what a user will order for a given day" do
+    fred = User.create!(name: "Fred")
+
     fridays = [
-      "9/3/2021",
-      "9/10/2021",
-      "9/17/2021",
-      "9/24/2021",
-      "10/8/2021",
-      "10/15/2021",
-      "10/22/2021"
+      "2021-9-3",
+      "2021-9-10",
+      "2021-9-17",
+      "2021-9-24",
+      "2021-10-8",
+      "2021-10-15",
+      "2021-10-22"
     ]
+
+    order = Order.create(user: fred, restaurant: @restaurant, date: Date.parse(fridays.delete_at(1)))
+    order.menu_items << MenuItem.find_by(name: "Fries")
+    order.menu_items << MenuItem.find_by(name: "Hamburger")
+    order.save
+
+    order = Order.create(user: fred, restaurant: @restaurant, date: Date.parse(fridays.delete_at(4)))
+    order.menu_items << MenuItem.find_by(name: "Grilled Cheese")
+    order.menu_items << MenuItem.find_by(name: "Mozzarella Sticks")
+    order.save
+
+    fridays.each do |friday|
+      order = Order.create(user: fred, restaurant: @restaurant, date: friday)
+      order.menu_items << MenuItem.find_by(name: "Fish")
+      order.menu_items << MenuItem.find_by(name: "Fries")
+      order.save
+    end
+
+    expect(fred.orders.length).to equal 7
+
+    expect(fred.predict_order_by_day_week(:friday, :main_dish)).to eq "Fish"
+    expect(fred.predict_order_by_day_week(:friday, :side_dish)).to eq "Fries"
+
   end
+
 end

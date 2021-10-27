@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe MenuItem, type: :model do
   it "must have a name" do
-    attributes = {description: "French fried potatoes.", price: 3.99}
+    attributes = {description: "French fried potatoes.", options: :side_dish, price: 3.99}
     expect { MenuItem.create!(attributes) }.to raise_error(ActiveRecord::RecordInvalid)
 
     attributes[:name] = "Fries"
@@ -11,7 +11,7 @@ RSpec.describe MenuItem, type: :model do
   end
 
   it "must have a unique name" do
-    attributes = {name: "Fries", description: "French fried potatoes.", price: 3.99}
+    attributes = {name: "Fries", description: "French fried potatoes.", options: :side_dish, price: 3.99}
     menu_item = MenuItem.create!(attributes)
     expect( menu_item.valid? ).to be_truthy
 
@@ -19,7 +19,7 @@ RSpec.describe MenuItem, type: :model do
   end
 
   it "must have a description" do
-    attributes = {name: "Fries", price: 3.99}
+    attributes = {name: "Fries", options: :side_dish, price: 3.99}
     expect { MenuItem.create!(attributes) }.to raise_error(ActiveRecord::RecordInvalid)
 
     attributes[:description] = "French fried potatoes."
@@ -28,7 +28,7 @@ RSpec.describe MenuItem, type: :model do
   end
 
   it "must have a price" do
-    attributes = {name: "Fries", description: "French fried potatoes."}
+    attributes = {name: "Fries", description: "French fried potatoes.", options: :side_dish}
     expect { MenuItem.create!(attributes) }.to raise_error(ActiveRecord::RecordInvalid)
 
     attributes[:price] = 3.99
@@ -40,7 +40,7 @@ RSpec.describe MenuItem, type: :model do
     restaurant = Restaurant.create(name: "Carl's Diner", address: "123 Easy Street", phone: "1(815)867-5309")
     app_menu   = Menu.create(name: "Appetizers", restaurant: restaurant)
     lunch_menu = Menu.create(name: "Lunch", restaurant: restaurant)
-    menu_item  = MenuItem.create(name: "Nachos", description: "Chips with melted cheese and salsa.", price: 7.99)
+    menu_item  = MenuItem.create(name: "Nachos", description: "Chips with melted cheese and salsa.", options: :side_dish, price: 7.99)
 
     app_menu.menu_items << menu_item
     lunch_menu.menu_items << menu_item

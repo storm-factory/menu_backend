@@ -23,9 +23,9 @@ RSpec.describe Menu, type: :model do
     menu = Menu.create!(name: "Appetizers",restaurant: @restaurant)
 
     menu_items = [
-                    {name: "Fries", description: "French fried potatoes.", price: 3.99},
-                    {name: "Nachos", description: "Chips with melted cheese and salsa.", price: 7.99},
-                    {name: "Mozzarella Sticks", description: "I think they are just fried cheese? Comes with dipping sauce.", price: 5.99}
+                    {name: "Fries", description: "French fried potatoes.", options: :side_dish, price: 3.99},
+                    {name: "Nachos", description: "Chips with melted cheese and salsa.", options: :side_dish, price: 7.99},
+                    {name: "Mozzarella Sticks", description: "I think they are just fried cheese? Comes with dipping sauce.", options: :side_dish, price: 5.99}
                   ]
 
     menu_items.each do |item|
