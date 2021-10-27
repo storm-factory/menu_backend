@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_26_123551) do
+ActiveRecord::Schema.define(version: 2021_10_26_235855) do
 
   create_table "menu_items", charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
@@ -30,6 +30,11 @@ ActiveRecord::Schema.define(version: 2021_10_26_123551) do
     t.bigint "menu_item_id", null: false
   end
 
+  create_table "menu_items_orders", id: false, charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.bigint "menu_item_id", null: false
+  end
+
   create_table "menus", charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.integer "restaurant_id"
@@ -37,9 +42,26 @@ ActiveRecord::Schema.define(version: 2021_10_26_123551) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "orders", charset: "utf8mb4", force: :cascade do |t|
+    t.date "date"
+    t.text "notes"
+    t.decimal "total", precision: 10
+    t.integer "restaurant_id"
+    t.integer "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "restaurants", charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.string "address"
+    t.string "phone"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "users", charset: "utf8mb4", force: :cascade do |t|
+    t.string "name"
     t.string "phone"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
